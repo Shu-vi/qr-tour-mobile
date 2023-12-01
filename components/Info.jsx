@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   leftButton: {
-    backgroundColor: "#000",
+    backgroundColor: "#55FF99",
     padding: 8,
     borderRadius: 5,
     alignSelf: "flex-start",
@@ -104,14 +104,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   rightButton: {
-    backgroundColor: "#000",
+    backgroundColor: "#55FF99",
     padding: 8,
     borderRadius: 5,
     alignSelf: "flex-end",
   },
   textButton: {
     fontSize: 16,
-    color: "#FFF",
+    color: "#000",
   },
   buttons: {
     flexDirection: "row",

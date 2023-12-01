@@ -6,10 +6,14 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  Image,
+  Dimensions,
 } from "react-native";
 import { sendMessage } from "../api/botApi";
+import buttonSendMessage from "../assets/buttonSendMessage.png";
 
 export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
+  const screenHeight = Dimensions.get("window").height;
   const [messages, setMessages] = useState([
     {
       from: "bot",
@@ -102,8 +106,8 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
 
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.input}
-          placeholder="Введите ваше сообщение..."
+          style={[styles.input, { maxHeight: screenHeight * 0.3 }]}
+          placeholder="Сообщение"
           placeholderTextColor="#B0B0B0"
           onChangeText={(text) => {
             setMessage(text);
@@ -112,11 +116,11 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
           multiline
         />
         <TouchableOpacity
-          style={styles.sendButton}
           onPress={onPress}
           disabled={message === ""}
+          style={styles.sendButtonWrapper}
         >
-          <Text style={styles.sendButtonText}>Отправить</Text>
+          <Image source={buttonSendMessage} style={styles.sendButton} />
         </TouchableOpacity>
       </View>
     </View>
@@ -159,22 +163,23 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
+    paddingRight: 12,
+    paddingLeft: 12,
+    paddingBottom: 5,
+    paddingTop: 5,
     borderTopWidth: 1,
     borderTopColor: "#E0E0E0",
   },
   input: {
     flex: 1,
     backgroundColor: "#FFF",
-    borderRadius: 8,
     padding: 12,
-    marginRight: 16,
+    marginRight: 15,
     fontSize: 16,
   },
   sendButton: {
-    backgroundColor: "#3366FF",
-    borderRadius: 8,
-    padding: 12,
+    width: 25,
+    height: 25,
   },
   sendButtonText: {
     color: "#FFF",
@@ -227,5 +232,10 @@ const styles = StyleSheet.create({
   },
   opacity70: {
     opacity: 0.7,
+  },
+  sendButtonWrapper: {
+    position: "absolute",
+    right: 5,
+    bottom: 17,
   },
 });
