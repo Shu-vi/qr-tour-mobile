@@ -11,7 +11,7 @@ import BotMessage from "./BotMessage";
 import UserMessage from "./UserMessage";
 import MyTextInput from "./MyTextInput";
 
-export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
+export default function Bot({ setScreenType, screenTypes, QRData }) {
   const [messages, setMessages] = useState([
     {
       from: "bot",

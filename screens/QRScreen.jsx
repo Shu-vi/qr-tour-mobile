@@ -8,8 +8,8 @@ export default function QRScreen() {
     Info: 2,
     Bot: 3,
   };
-  const [screenType, setScreenType] = useState(screenTypes.Bot);
-  const [QRData, setQRData] = useState("1");
+  const [screenType, setScreenType] = useState(screenTypes.QR);
+  const [QRData, setQRData] = useState("");
 
   if (screenType === screenTypes.QR) {
     return (
