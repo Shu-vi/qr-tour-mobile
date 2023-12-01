@@ -2,18 +2,16 @@ import React, { useRef, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  Image,
-  Dimensions,
 } from "react-native";
 import { sendMessage } from "../api/botApi";
-import buttonSendMessage from "../assets/buttonSendMessage.png";
+import BotMessage from "./BotMessage";
+import UserMessage from "./UserMessage";
+import MyTextInput from "./MyTextInput";
 
 export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
-  const screenHeight = Dimensions.get("window").height;
   const [messages, setMessages] = useState([
     {
       from: "bot",
@@ -30,12 +28,12 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
   };
 
   const onPress = async () => {
-    const tempMessage = message;
+    const tempMessage = message.trim();
     setMessage("");
-    const id = Date.now();
+    const messageId = Date.now();
     const updatedMessages = [
       ...messages,
-      { message: tempMessage, error: false, loading: true, id },
+      { message: tempMessage, error: false, loading: true, id: messageId },
     ];
     setMessages(updatedMessages);
     scrollViewRef.current.scrollToEnd({ animated: true });
@@ -43,11 +41,15 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
       const botMessage = await sendMessage(tempMessage, QRData);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { message: botMessage.data, from: "bot" },
+        {
+          message: botMessage.data,
+          from: "bot",
+          replyTo: messageId,
+        },
       ]);
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
-          msg.id !== undefined && msg.id === id
+          msg.id !== undefined && msg.id === messageId
             ? { ...msg, loading: false }
             : msg
         )
@@ -56,12 +58,22 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
     } catch (error) {
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
-          msg.id !== undefined && msg.id === id
+          msg.id !== undefined && msg.id === messageId
             ? { ...msg, error: true, loading: false }
             : msg
         )
       );
     }
+  };
+
+  const getMessageById = (id) => {
+    let result = null;
+    messages.forEach((msg) => {
+      if (msg.id && msg.id === id) {
+        result = msg.message;
+      }
+    });
+    return result;
   };
 
   return (
@@ -78,51 +90,28 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
       </View>
       <ScrollView style={styles.messageContainer} ref={scrollViewRef}>
         {messages.map((mess, i) => {
-          return (
-            <View
+          return mess.from ? (
+            <BotMessage
               key={i}
-              style={[
-                mess.from ? styles.botMessage : styles.userMessage,
-                mess.error ? styles.errorContainer : null,
-                mess.loading ? styles.opacity70 : null,
-              ]}
-            >
-              {mess.error && (
-                <View style={styles.errorIconContainer}>
-                  <Text style={styles.errorIcon}>!</Text>
-                </View>
-              )}
-              <Text
-                style={
-                  mess.from ? styles.botMessageText : styles.userMessageText
-                }
-              >
-                {mess.message}
-              </Text>
-            </View>
+              message={mess.message}
+              reply={getMessageById(mess.replyTo)}
+            />
+          ) : (
+            <UserMessage
+              key={i}
+              isError={mess.error}
+              isLoading={mess.loading}
+              message={mess.message}
+            />
           );
         })}
       </ScrollView>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, { maxHeight: screenHeight * 0.3 }]}
-          placeholder="Сообщение"
-          placeholderTextColor="#B0B0B0"
-          onChangeText={(text) => {
-            setMessage(text);
-          }}
-          value={message}
-          multiline
-        />
-        <TouchableOpacity
-          onPress={onPress}
-          disabled={message === ""}
-          style={styles.sendButtonWrapper}
-        >
-          <Image source={buttonSendMessage} style={styles.sendButton} />
-        </TouchableOpacity>
-      </View>
+      <MyTextInput
+        message={message}
+        setMessage={setMessage}
+        onPress={onPress}
+      />
     </View>
   );
 }
@@ -136,60 +125,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  botMessage: {
-    alignSelf: "flex-start",
-    backgroundColor: "#E5E5E5",
-    borderRadius: 8,
-    marginBottom: 8,
-    maxWidth: "80%",
-    padding: 12,
-  },
-  botMessageText: {
-    fontSize: 16,
-    color: "#000",
-  },
-  userMessage: {
-    alignSelf: "flex-end",
-    backgroundColor: "#3366FF",
-    borderRadius: 8,
-    marginBottom: 8,
-    maxWidth: "80%",
-    padding: 12,
-  },
-  userMessageText: {
-    fontSize: 16,
-    color: "#FFF",
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingRight: 12,
-    paddingLeft: 12,
-    paddingBottom: 5,
-    paddingTop: 5,
-    borderTopWidth: 1,
-    borderTopColor: "#E0E0E0",
-  },
-  input: {
-    flex: 1,
-    backgroundColor: "#FFF",
-    padding: 12,
-    marginRight: 15,
-    fontSize: 16,
-  },
-  sendButton: {
-    width: 25,
-    height: 25,
-  },
-  sendButtonText: {
-    color: "#FFF",
-    fontSize: 16,
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    marginTop: 16,
-    marginLeft: 16,
-  },
   topbar: {
     backgroundColor: "#55FF99",
     flexDirection: "row",
@@ -199,43 +134,11 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 15,
     borderBottomEndRadius: 15,
   },
-  topbarText: {
-    fontSize: 18,
-    color: "#FFF",
-    fontWeight: "bold",
-  },
   backButton: {
-    alignSelf: "center",
+    alignSelf: "flex-start",
   },
   backButtonText: {
     fontSize: 16,
     color: "#3366FF",
-  },
-  errorContainer: {
-    borderColor: "red",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderRadius: 8,
-    backgroundColor: "#FFCCCC",
-  },
-  errorIconContainer: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    backgroundColor: "red",
-    padding: 4,
-    borderRadius: 4,
-  },
-  errorIcon: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  opacity70: {
-    opacity: 0.7,
-  },
-  sendButtonWrapper: {
-    position: "absolute",
-    right: 5,
-    bottom: 17,
   },
 });
