@@ -42,6 +42,7 @@ export default function QR({
         onChangeText={(text) => {
           setIp(text);
         }}
+        style={styles.input}
       />
       <View style={styles.wrapper}>
         <BarCodeScanner
@@ -72,5 +73,10 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     justifyContent: "center",
+  },
+  input: {
+    backgroundColor: "white",
+    color: "black",
+    fontSize: 18,
   },
 });

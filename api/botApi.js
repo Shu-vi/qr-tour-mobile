@@ -9,7 +9,7 @@ export const sendMessage = async (message, id, ip) => {
 };
 
 export const getDescription = async (id, ip) => {
-  const { data } = await $host.post("http://" + ip + ":5002/", {
+  const { data } = await axios.post("http://" + ip + ":5002/", {
     id,
   });
   return data;
