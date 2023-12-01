@@ -11,7 +11,7 @@ import BotMessage from "./BotMessage";
 import UserMessage from "./UserMessage";
 import MyTextInput from "./MyTextInput";
 
-export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
+export default function Bot({ setScreenType, screenTypes, QRData, ip }) {
   const [messages, setMessages] = useState([
     {
       from: "bot",
@@ -38,7 +38,7 @@ export default function ChatComponent({ setScreenType, screenTypes, QRData }) {
     setMessages(updatedMessages);
     scrollViewRef.current.scrollToEnd({ animated: true });
     try {
-      const botMessage = await sendMessage(tempMessage, QRData);
+      const botMessage = await sendMessage(tempMessage, QRData, ip);
       setMessages((prevMessages) => [
         ...prevMessages,
         {

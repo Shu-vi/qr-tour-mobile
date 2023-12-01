@@ -8,8 +8,9 @@ export default function QRScreen() {
     Info: 2,
     Bot: 3,
   };
-  const [screenType, setScreenType] = useState(screenTypes.Bot);
-  const [QRData, setQRData] = useState("1");
+  const [screenType, setScreenType] = useState(screenTypes.QR);
+  const [QRData, setQRData] = useState("");
+  const [ip, setIp] = useState("");
 
   if (screenType === screenTypes.QR) {
     return (
@@ -17,6 +18,7 @@ export default function QRScreen() {
         setScreenType={setScreenType}
         screenTypes={screenTypes}
         setQRData={setQRData}
+        setIp={setIp}
       />
     );
   } else if (screenType === screenTypes.Info) {
@@ -25,6 +27,7 @@ export default function QRScreen() {
         QRData={QRData}
         setScreenType={setScreenType}
         screenTypes={screenTypes}
+        ip={ip}
       />
     );
   } else if (screenType === screenTypes.Bot) {
@@ -33,6 +36,7 @@ export default function QRScreen() {
         setScreenType={setScreenType}
         screenTypes={screenTypes}
         QRData={QRData}
+        ip={ip}
       />
     );
   }

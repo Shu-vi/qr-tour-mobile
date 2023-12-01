@@ -10,13 +10,13 @@ import {
 } from "react-native";
 import { getDescription } from "../api/botApi";
 
-export default function Info({ QRData, setScreenType, screenTypes }) {
+export default function Info({ QRData, setScreenType, screenTypes, ip }) {
   const [info, setInfo] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    getDescription(QRData)
+    getDescription(QRData, ip)
       .then((data) => {
         if (data.status) {
           if (data.status == "1") {

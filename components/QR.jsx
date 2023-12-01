@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TextInput } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-export default function QR({ setScreenType, screenTypes, setQRData }) {
+export default function QR({
+  setScreenType,
+  screenTypes,
+  setQRData,
+  ip,
+  setIp,
+}) {
   const [hasPermission, setHasPermission] = useState(null);
 
   useEffect(() => {
@@ -29,6 +35,14 @@ export default function QR({ setScreenType, screenTypes, setQRData }) {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        placeholderTextColor="#B0B0B0"
+        placeholder="127.0.0.1"
+        value={ip}
+        onChangeText={(text) => {
+          setIp(text);
+        }}
+      />
       <View style={styles.wrapper}>
         <BarCodeScanner
           onBarCodeScanned={handleBarCodeScanned}

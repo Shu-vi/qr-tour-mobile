@@ -1,15 +1,15 @@
-import { $host } from "./index";
+import axios from "axios";
 
-export const sendMessage = async (message, id) => {
-  const { data } = await $host.post("/qa", {
+export const sendMessage = async (message, id, ip) => {
+  const { data } = await axios.post("http://" + ip + ":5002/qa", {
     data: message,
     id,
   });
   return data;
 };
 
-export const getDescription = async (id) => {
-  const { data } = await $host.post("/", {
+export const getDescription = async (id, ip) => {
+  const { data } = await $host.post("http://" + ip + ":5002/", {
     id,
   });
   return data;
